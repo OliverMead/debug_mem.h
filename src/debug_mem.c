@@ -108,7 +108,7 @@ extern size_t debug_mem_end()
     if ( table != NULL ) {
         n_unfreed = table_destroy( table );
         fprintf( logfile,
-                 "Destroyed allocation table with %lu un-freed items\n",
+                 "Destroyed allocation table with %zu un-freed items\n",
                  n_unfreed );
         table = NULL;
     }
@@ -166,7 +166,7 @@ extern void *debug_mem_malloc(
         table_set( table, ( uintptr_t ) p, size );
     }
     if ( initialised )
-        fprintf( logfile, "%s, %s (line %u): malloc(%lu) -> @%" PRIXPTR "\n",
+        fprintf( logfile, "%s, %s (line %u): malloc(%zu) -> @%" PRIXPTR "\n",
                  filename, func, line, size, ( uintptr_t ) p );
     return p;
 }
@@ -185,7 +185,7 @@ extern void *debug_mem_calloc(
     if ( table != NULL )
         table_set( table, ( uintptr_t ) p, nmemb * size );
     if ( initialised ) {
-        fprintf( logfile, "%s, %s (line %u): calloc(%lu, %lu) -> @%"
+        fprintf( logfile, "%s, %s (line %u): calloc(%zu, %zu) -> @%"
                  PRIXPTR "\n", filename, func, line, nmemb, size,
                  ( uintptr_t ) p );
     }
