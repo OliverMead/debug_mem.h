@@ -6,10 +6,9 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
 if (MSVC)
-    add_compile_options(/W4 /Za)
-    # add_compile_options(/W4 /D_CRT_SECURE_NO_WARNINGS)
+    add_compile_options(/Wall /D_CRT_SECURE_NO_WARNINGS)
 else()
-    add_compile_options(-g -Og -Wall -pedantic -Wextra)
+    add_compile_options(-g -Og -Wall -pedantic-errors -Wextra)
 endif()
 
 add_library(debug_mem 
