@@ -1,4 +1,5 @@
 # debug\_mem.h
+![Status Indicator](https://github.com/OliverMead/debug_mem.h/actions/workflows/cmake.yml/badge.svg?branch=main)
 ## IMPORTANT
 
 *This is not ready for use since it is not thread-safe, and the testing in
