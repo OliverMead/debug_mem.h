@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
 if (MSVC)
-    add_compile_options(/W4)
+    add_compile_options(/W4 /D_CRT_SECURE_NO_WARNINGS)
 else()
     add_compile_options(-g -Og -Wall -pedantic -Wextra)
 endif()
