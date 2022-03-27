@@ -57,7 +57,7 @@ compiler option.
 int main()
 {
 #ifdef DEBUG_MEM_ENABLE
-    int err = debug_mem_init( "memory_" TESTNAME ".log", 10 );
+    int err = debug_mem_init( "memory.log", 10 );
     if ( err ) {
         fprintf( stderr, "Failed to initialise memory debugger\n" );
         return 1;
