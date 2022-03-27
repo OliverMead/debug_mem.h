@@ -132,6 +132,24 @@ extern size_t debug_mem_table_capacity()
         return 0;
 }
 
+extern void *debug_mem_pass_pointer( void *p, const char* filename,
+                                     unsigned int line, const char* func )
+{
+    if ( initialised )
+        fprintf( logfile, "%s, %s (line %u): pass_pointer(@%" PRIXPTR ")\n",
+                 filename, func, line, ( uintptr_t ) p );
+    return p;
+}
+
+extern void *debug_mem_return_pointer( void *p, const char* filename,
+                                       unsigned int line, const char* func )
+{
+    if ( initialised )
+        fprintf( logfile, "%s, %s (line %u): return_pointer(@%" PRIXPTR ")\n",
+                 filename, func, line, ( uintptr_t ) p );
+    return p;
+}
+
 extern void *debug_mem_malloc(
     size_t size,  const char* filename,
     unsigned int line,    const char* func )
@@ -184,14 +202,4 @@ extern void debug_mem_free(
         fprintf( logfile, "%s, %s (line %u): free(@%" PRIXPTR ")\n",
                  filename, func, line, ( uintptr_t ) buf );
     free( buf );
-}
-
-extern inline void *debug_pass_pointer(
-    void *buf,    const char* filename,
-    unsigned int line,    const char* func )
-{
-    if ( initialised )
-        fprintf( logfile, "%s, %s (line %u): passing pointer (@%" PRIXPTR ")\n",
-                 filename, func, line, ( uintptr_t ) buf );
-    return buf;
 }

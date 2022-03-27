@@ -44,8 +44,8 @@
 #define malloc(n)         debug_mem_malloc(n, __FILE__, __LINE__, __func__)
 #define calloc(n, s)      debug_mem_calloc(n, s, __FILE__, __LINE__, __func__)
 #define free(n)           debug_mem_free(n, __FILE__, __LINE__, __func__)
-#define pass_pointer(type, n)   (type) debug_pass_pointer((void *) n, __FILE__, __LINE__, __func__)
-#define return_pointer(type, n)  return (type) debug_return_pointer((void *) n, __FILE__, __LINE__, __func__)
+#define pass_pointer(type, n)   (type) debug_mem_pass_pointer((void *) n, __FILE__, __LINE__, __func__)
+#define return_pointer(type, n)  return (type) debug_mem_return_pointer((void *) n, __FILE__, __LINE__, __func__)
 #else
 #define pass_pointer(type, n)    n
 #define return_pointer(type, n)  n
@@ -62,7 +62,7 @@ extern void *debug_mem_calloc(
 extern void debug_mem_free(
     void *,    const char*,
     unsigned int,    const char* );
-extern void *debug_pass_pointer(
+extern void *debug_mem_pass_pointer(
     void *,    const char*,
     unsigned int,    const char* );
 extern int debug_mem_check( const void* );
@@ -70,4 +70,11 @@ extern int debug_mem_check_all( );
 extern size_t debug_mem_table_length();
 extern size_t debug_mem_table_capacity();
 
+extern void *debug_mem_pass_pointer(
+    void *, const char*,
+    unsigned int, const char* );
+
+extern void *debug_mem_return_pointer(
+    void *, const char*,
+    unsigned int, const char* );
 #endif
