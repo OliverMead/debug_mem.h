@@ -66,7 +66,7 @@ extern void *debug_mem_pass_pointer(
     void *,    const char*,
     unsigned int,    const char* );
 extern int debug_mem_check( const void* );
-extern int debug_mem_check_all( );
+extern size_t debug_mem_check_all( );
 extern size_t debug_mem_table_length();
 extern size_t debug_mem_table_capacity();
 

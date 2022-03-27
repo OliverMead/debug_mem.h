@@ -80,7 +80,7 @@ extern int debug_mem_check( const void* buf )
 
 // returns the number of allocations which either were not in the table,
 // or had overwritten their checksum bytes
-extern int debug_mem_check_all()
+extern size_t debug_mem_check_all()
 {
     if ( table == NULL )
         return 0;
