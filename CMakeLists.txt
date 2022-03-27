@@ -55,9 +55,9 @@ add_test("Table automatically expands as allocation increases"
 add_test("Table automatically shrinks as allocations are freed, minimum size as original size" 
     test6)
 
-add_custom_command(TARGET test1 
-    POST_BUILD
-    COMMAND ctest --output-on-failure -C $<CONFIGURATION>)
-add_custom_command(TARGET test1
-    POST_BUILD
-    COMMAND rm memory_test*.log)
+# add_custom_command(TARGET test1 
+#     POST_BUILD
+#     COMMAND ctest --output-on-failure -C $<CONFIGURATION>)
+# add_custom_command(TARGET test1
+#     POST_BUILD
+#     COMMAND rm memory_test*.log)
