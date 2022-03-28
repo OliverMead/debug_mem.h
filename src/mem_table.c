@@ -3,12 +3,13 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "mem_table.h"
 
 typedef struct {
     const void *location;
     size_t size;
-    uint8_t checksum;
+    checksum_t checksum;
 } MemHTFrame;
 
 struct MemHT {
@@ -51,8 +52,8 @@ static uintptr_t table_set_entry( MemHTFrame *entries, size_t capacity,
     // entry does not yet exist, create it and apply checksum to buffer
     entries[index].location = ( const void * ) location;
     entries[index].size = size;
-    entries[index].checksum = ( uint8_t )( hash % 256 );
-    ( ( uint8_t* )entries[index].location )[size] = entries[index].checksum;
+    entries[index].checksum = ( checksum_t )( hash % ( CHAR_BIT * sizeof( checksum_t ) ) );
+    ( ( checksum_t* )entries[index].location )[size / sizeof( checksum_t )] = entries[index].checksum;
     if ( plength != NULL )
         ( *plength )++;
     return location;
@@ -176,7 +177,7 @@ extern bool table_remove( MemHT* table, const void *location )
 // populate the given size_pointer and checksum_pointer with the values
 // associated with location, returns false if the entry could not be found
 extern bool table_get( MemHT* table, const void *location,
-                       size_t *size_pointer, uint8_t *checksum_pointer )
+                       size_t *size_pointer, checksum_t *checksum_pointer )
 {
     uintptr_t hash = table_hash( ( uintptr_t * ) &location );
     size_t index = ( size_t ) ( hash % ( uintptr_t ) ( table->capacity ) );

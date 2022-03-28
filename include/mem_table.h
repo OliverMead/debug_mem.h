@@ -9,12 +9,15 @@
 #define FNV_OFFSET 1469598103934656037UL
 #define FNV_PRIME 1099511628211UL
 
+#define PRIXCKSM PRIXMAX
+typedef uintmax_t checksum_t;
+
 typedef struct MemHT MemHT;
 
 typedef struct {
     const void* location;
     size_t size;
-    uint8_t checksum;
+    checksum_t checksum;
 
     MemHT* _table;
     size_t _index;
@@ -27,7 +30,7 @@ extern size_t table_destroy( MemHT* table );
 extern uintptr_t table_set( MemHT* table, uintptr_t location, size_t size );
 extern bool table_remove( MemHT* table, const void *location );
 extern bool table_get( MemHT* table, const void *location,
-                       size_t *size_pointer, uint8_t *checksum_pointer );
+                       size_t *size_pointer, checksum_t *checksum_pointer );
 extern HTIter table_iterator( MemHT* table );
 extern bool table_iter_next( HTIter* iterator );
 #endif

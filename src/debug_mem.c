@@ -30,15 +30,15 @@ extern int debug_mem_init( const char* log_location, size_t initial_capacity )
 }
 
 static int debug_mem_checker( const void* buf, size_t buffer_size,
-                              uint8_t checksum )
+                              checksum_t checksum )
 {
-    uint8_t cmp_checksum = ( ( uint8_t * ) buf )[buffer_size];
+    checksum_t cmp_checksum = ( ( checksum_t * ) buf )[buffer_size / sizeof( checksum_t )];
     if ( checksum == cmp_checksum ) {
         if ( initialised )
             fprintf(
                 logfile,
                 "Checking buffer @%" PRIXPTR " successful: checksum %"
-                PRIX8 " matches last byte %" PRIX8 "\n",
+                PRIXCKSM " matches last byte %" PRIXCKSM "\n",
                 ( uintptr_t ) buf, checksum, cmp_checksum );
         return 0;
     } else {
@@ -46,8 +46,8 @@ static int debug_mem_checker( const void* buf, size_t buffer_size,
             fprintf(
                 logfile,
                 "Checking buffer @%" PRIXPTR
-                " unsuccessful: checksum %" PRIX8
-                " does not match last byte %" PRIX8 "\n",
+                " unsuccessful: checksum %" PRIXCKSM
+                " does not match last byte %" PRIXCKSM "\n",
                 ( uintptr_t ) buf, checksum, cmp_checksum );
         return 1;
     }
@@ -61,7 +61,7 @@ extern int debug_mem_check( const void* buf )
 {
     if ( table != NULL ) {
         size_t buffer_size;
-        uint8_t checksum;
+        checksum_t checksum;
         if ( table_get( table, buf, &buffer_size, &checksum ) ) {
             return debug_mem_checker( buf, buffer_size, checksum );
         } else {
@@ -156,7 +156,7 @@ extern void *debug_mem_malloc(
 {
     void* p;
     if ( table != NULL )
-        p = malloc( size + 1 );
+        p = malloc( size + sizeof( checksum_t ) );
     else
         p = malloc( size );
     if ( p == NULL ) {
