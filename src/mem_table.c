@@ -53,7 +53,7 @@ static uintptr_t table_set_entry( MemHTFrame *entries, size_t capacity,
     entries[index].location = ( const void * ) location;
     entries[index].size = size;
     entries[index].checksum = ( checksum_t )( hash % ( CHAR_BIT * sizeof( checksum_t ) ) );
-    ( ( checksum_t* )entries[index].location )[size / sizeof( checksum_t )] = entries[index].checksum;
+    *( checksum_t* ) &( ( char * ) entries[index].location ) [size] = entries[index].checksum;
     if ( plength != NULL )
         ( *plength )++;
     return location;

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(debug_mem VERSION 0.1.2 DESCRIPTION "simple memory debugging library")
+project(debug_mem VERSION 0.1.3 DESCRIPTION "simple memory debugging library")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
@@ -30,6 +30,8 @@ install(
 
 enable_testing()
 
+add_executable(       test7 test/test7_checksum_pointer_correct.c)
+target_link_libraries(test7 PUBLIC debug_mem)
 add_executable(       test6 test/test6_table_auto_shrink.c)
 target_link_libraries(test6 PUBLIC debug_mem)
 add_executable(       test5 test/test5_table_auto_expand.c)
@@ -54,6 +56,8 @@ add_test("Table automatically expands as allocation increases"
     test5)
 add_test("Table automatically shrinks as allocations are freed, minimum size as original size" 
     test6)
+add_test("Checksum is read correctly when the buffer is an odd size"
+    test7)
 
 # add_custom_command(TARGET test1 
 #     POST_BUILD

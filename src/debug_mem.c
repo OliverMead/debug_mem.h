@@ -32,7 +32,7 @@ extern int debug_mem_init( const char* log_location, size_t initial_capacity )
 static int debug_mem_checker( const void* buf, size_t buffer_size,
                               checksum_t checksum )
 {
-    checksum_t cmp_checksum = ( ( checksum_t * ) buf )[buffer_size / sizeof( checksum_t )];
+    checksum_t cmp_checksum = *( checksum_t * )  &( ( char * ) buf )[buffer_size] ;
     if ( checksum == cmp_checksum ) {
         if ( initialised )
             fprintf(
