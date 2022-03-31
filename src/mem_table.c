@@ -38,22 +38,25 @@ static uintptr_t table_set_entry( MemHTFrame *entries, size_t capacity,
 {
     uintptr_t hash = table_hash( &location );
     size_t index = ( size_t )( hash % ( uintptr_t )( capacity ) );
-    while ( entries[index].location != NULL ) {
-        bool cmp = ( uintptr_t )( entries[index].location )
+    MemHTFrame *entry = &entries[index];
+    while ( entry->location != NULL ) {
+        bool cmp = ( uintptr_t )( entry->location )
                    == ( uintptr_t )( location );
         if ( cmp ) { // pointer exists, update size
-            entries[index].size = size;
-            return ( uintptr_t ) entries[index].location;
+            entry->size = size;
+            return ( uintptr_t ) entry->location;
         }
-        index++;
-        if ( index >= capacity )
+        entry = &entries[++index];
+        if ( index >= capacity ) {
             index = 0;
+            entry = &entries[index];
+        }
     }
     // entry does not yet exist, create it and apply checksum to buffer
-    entries[index].location = ( const void * ) location;
-    entries[index].size = size;
-    entries[index].checksum = ( checksum_t )( hash % ( CHAR_BIT * sizeof( checksum_t ) ) );
-    *( checksum_t* ) &( ( char * ) entries[index].location ) [size] = entries[index].checksum;
+    entry->location = ( const void * ) location;
+    entry->size = size;
+    entry->checksum = ( checksum_t )( hash % ( CHAR_BIT * sizeof( checksum_t ) ) );
+    *( checksum_t* ) &( ( char * ) entry->location ) [size] = entry->checksum;
     if ( plength != NULL )
         ( *plength )++;
     return location;
@@ -124,8 +127,9 @@ extern size_t table_destroy( MemHT* table )
 {
     size_t count = 0;
     for ( size_t i = 0; i < table->capacity; i++ ) {
-        if ( table->entries[i].location != NULL ) {
-            free( ( void * )table->entries[i].location );
+        MemHTFrame *entry = &table->entries[i];
+        if ( entry->location != NULL ) {
+            free( ( void * ) entry->location );
             count++;
         }
     }
@@ -157,20 +161,23 @@ extern bool table_remove( MemHT* table, const void *location )
     size_t index = ( size_t )( hash % ( uintptr_t ) ( table->capacity ) );
     size_t index_start = index;
     MemHTFrame *entries = table->entries;
+    MemHTFrame *entry = &entries[index];
     do {
-        bool cmp = ( uintptr_t )( table->entries[index].location )
+        bool cmp = ( uintptr_t )( entry->location )
                    == ( uintptr_t )( location );
         if ( cmp ) {
-            entries[index].location = NULL;
-            entries[index].size = 0;
-            entries[index].checksum = 0;
+            entry->location = NULL;
+            entry->size = 0;
+            entry->checksum = 0;
             table->length--;
             return true;
         }
-        index++;
-        if ( index >= table->capacity )
+        entry = &entries[++index];
+        if ( index >= table->capacity ) {
             index = 0;
-    } while ( index != index_start );
+            entry = &entries[index];
+        }
+    } while ( index != index_start ); // wrapped around
     return false;
 }
 
@@ -183,18 +190,19 @@ extern bool table_get( MemHT* table, const void *location,
     size_t index = ( size_t ) ( hash % ( uintptr_t ) ( table->capacity ) );
     size_t index_start = index;
     MemHTFrame *entries = table->entries;
+    MemHTFrame *entry = &entries[index];
     do {
-        bool cmp = ( uintptr_t )( table->entries[index].location )
+        bool cmp = ( uintptr_t )( entry->location )
                    == ( uintptr_t )( location );
         if ( cmp ) {
-            MemHTFrame entry = entries[index];
-            *size_pointer = entry.size;
-            *checksum_pointer = entry.checksum;
+            *size_pointer = entry->size;
+            *checksum_pointer = entry->checksum;
             return true;
         }
-        index++;
+        entry = &entries[++index];
         if ( index >= table->capacity ) {
             index = 0;
+            entry = &entries[index];
         }
     } while ( index != index_start );
     return false;
@@ -216,10 +224,10 @@ extern bool table_iter_next( HTIter* iterator )
         size_t i = iterator->_index;
         iterator->_index++;
         if ( table->entries[i].location != NULL ) {
-            MemHTFrame entry = table->entries[i];
-            iterator->location = entry.location;
-            iterator->size = entry.size;
-            iterator->checksum = entry.checksum;
+            MemHTFrame *entry = &( table->entries[i] );
+            iterator->location = entry->location;
+            iterator->size = entry->size;
+            iterator->checksum = entry->checksum;
             return true;
         }
     }
