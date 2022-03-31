@@ -4,11 +4,22 @@ project(debug_mem VERSION 0.1.3 DESCRIPTION "simple memory debugging library")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+SET(CMAKE_INSTALL_RPATH "$\{ORIGIN\}")
 
 if (MSVC)
     add_compile_options(/W4 /D_CRT_SECURE_NO_WARNINGS)
 else()
-    add_compile_options(-g -Og -Wall -pedantic-errors -Wextra)
+    add_compile_options(-Wall -pedantic-errors -Wextra)
+endif()
+
+if (CMAKE_BUILD_TYPE=DEBUG)
+    if (MSVC)
+        add_compile_options()
+    else()
+        add_compile_options(-g -Og)
+    endif()
 endif()
 
 add_library(debug_mem 
